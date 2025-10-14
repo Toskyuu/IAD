@@ -1,0 +1,24 @@
+Algorytm 3.2: Trening neuronu liniowego z użyciem wielu wzorców
+
+1) Niech N∈ℕ, (gdzie ℕ oznacza zbiór liczb naturalnych) będzie liczbą wejść neuronu liniowego, zaś Ω={ ( x(μ) ,z(μ) )∈ℝ^N × ℝ , μ∈{1,…,M} } będzie zbiorem treningowym, gdzie ℝ oznacza zbiór liczb rzeczywistych, złożonym z wielu wzorców treningowych postaci ( x(μ) ,z(μ) )∈ℝ^N × ℝ.
+
+2) Niech K∈ℕ będzie zadaną z góry liczbą tzw. epok treningowych (czyli liczbą iteracji procesu treningowego), zaś η∈ℝ+ będzie pewną małą, liczbą rzeczywistą nazywaną krokiem treningowym.
+
+3) Ustaw wszystkie wagi neuronu liniowego na wartości losowe z założonego z góry przedziału [ω1, ω2] ⊂ ℝ i rozpocznij proces treningowy ustawiając k=0.
+
+4) Czy k < K? Jeśli tak to przejdź do kroku 5), w przeciwnym razie koniec.
+
+5) Wybierz aktualny wzorzec treningowy ( x(μ), z(μ) ), μ=1.
+
+6) Czy μ = M?, tzn. czy wszystkie wzorce treningowe zostały zaprezentowane sieci w aktualnej epoce treningowej k? Jeśli nie kontynuuj, w przeciwnym razie idź do kroku 10).
+
+7) Na wejścia neuronu podaj wejścia x(μ) = [ x1(μ), x2(μ), ..., xN(μ) ] aktualnego wzorca treningowego i oblicz wyjście neuronu, korzystając z następującej zależności:
+   y = Σ (i=1 do N) [wi * xi(μ)] = w1*x1(μ) + w2*x2(μ) + ... + wN*xN(μ).
+
+8) Zmień wszystkie wagi neuronu zgodnie z regułą delta używając następującego wzoru:
+   wi = wi + η * (z(μ) - y) * xi(μ), dla i=1,...,N,
+   gdzie y jest wyjściem neuronu obliczonym wcześniej w kroku 7), η oznacza krok treningowy, z(μ) jest pożądaną wartością wyjściową obecną w μ–tym wzorcu treningowym, natomiast xi(μ), i=1,...,N są wartościami poszczególnych wejść neuronu również obecnymi w przetwarzanym aktualnie wzorcu treningowym ( x(μ), z(μ) ).
+
+9) Zwiększ o 1 indeks aktualnego wzorca treningowego, tzn. μ = μ+1, a następnie kontynuuj działanie algorytmu dla następnego wzorca treningowego skacząc do kroku 6).
+
+10) Zwiększ o 1 indeks aktualnej epoki treningowej, tzn. k = k+1 i skocz do kroku 4).

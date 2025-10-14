@@ -1,0 +1,49 @@
+PODSUMOWANIE EKSPERYMENTU UCZENIA NEURONU
+
+1️⃣ Przypadek: N < M (N = 10, M = 80)
+-------------------------------------------------
+- Liczba wag neuronu: 10
+- Liczba wzorców treningowych: 80
+- Średni błąd MSE: 0.00935
+- Średnie odchylenie wag: 0.000000
+
+Wnioski:
+We wszystkich trzech przebiegach końcowe wagi były identyczne.
+Mimo różnych wartości początkowych, neuron zawsze zbiegał do tego samego minimum błędu.
+Uczenie było stabilne i skuteczne — model osiągał bardzo niski błąd.
+
+-------------------------------------------------
+
+2️⃣ Przypadek: N = M (N = 10, M = 10)
+-------------------------------------------------
+- Liczba wag neuronu: 10
+- Liczba wzorców treningowych: 10
+- Średni błąd MSE: 0.007571
+- Średnie odchylenie wag: 0.066751
+
+Wnioski:
+Końcowe wagi różniły się pomiędzy przebiegami — nie zawsze osiągane było to samo rozwiązanie.
+Neuron był w stanie nauczyć się danych, ale występowały niewielkie różnice w wagach końcowych,
+co sugeruje istnienie kilku lokalnych minimów funkcji błędu.
+
+-------------------------------------------------
+
+3️⃣ Przypadek: N > M (N = 80, M = 10)
+-------------------------------------------------
+- Liczba wag neuronu: 80
+- Liczba wzorców treningowych: 10
+- Średni błąd MSE: 0.000000
+- Średnie odchylenie wag: 0.192389
+
+Wnioski:
+Neuron posiadał znacznie więcej wag niż danych treningowych.
+Uczenie doprowadziło do bardzo niskiego błędu (praktycznie 0), co oznacza, że neuron zapamiętał dane treningowe (overfitting).
+Odchylenie wag między przebiegami było największe – różne zestawy wag dawały ten sam wynik.
+Uczenie skuteczne, ale brak uogólnienia (przeuczenie modelu).
+
+-------------------------------------------------
+
+PODSUMOWANIE OGÓLNE:
+- Dla N < M: stabilne, jednoznaczne rozwiązanie (uczenie skuteczne i zbieżne).
+- Dla N = M: możliwe różne minima lokalne, umiarkowana stabilność.
+- Dla N > M: model przeucza się, zapamiętuje dane, brak uogólnienia.
