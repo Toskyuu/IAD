@@ -1,89 +1,82 @@
 import numpy as np
+import os
 
 
-def train_linear_neuron(N, M, num_runs=3, epochs=100, learning_rate=0.01):
+def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.01):
     """
-    Funkcja do trenowania neuronu liniowego i przeprowadzania eksperymentów.
-
-    Argumenty:
-    N (int): Liczba wag neuronu (wymiar wektora wejściowego).
-    M (int): Liczba wzorców treningowych.
-    num_runs (int): Liczba powtórzeń algorytmu z różnymi wagami początkowymi.
-    epochs (int): Liczba epok treningowych.
-    learning_rate (float): Współczynnik uczenia eta.
+    Implementuje i analizuje trening neuronu liniowego dla zadanego N i M,
+    używając danych treningowych z pliku TXT.
     """
-    print(f"--- START EKSPERYMENTU: N = {N}, M = {M} ---")
+    filename = f"dane_N{N}_M{M}.txt"
 
-    # 1. Generowanie losowego, ale STAŁEGO dla danego przypadku, zbioru treningowego
-    # Ustawiamy ziarno losowości, aby zbiór treningowy był ten sam przy każdym uruchomieniu
-    # tej funkcji, ale inny dla różnych par (N, M).
-    np.random.seed(N + M)
-    X = np.random.rand(M, N)  # Macierz wzorców wejściowych (M wierszy, N kolumn)
-    # Generujemy "prawdziwe" wagi, aby stworzyć sensowne dane wyjściowe d
-    true_w = np.random.randn(N)
-    d = X @ true_w + np.random.randn(M) * 0.1  # Wyjścia = X * true_w + mały szum
+    if os.path.exists(filename):
+        print(f"Znaleziono plik '{filename}'. Wczytuję dane treningowe...")
+        # Wczytujemy dane. Ostatnia kolumna to 'z', reszta to 'X'.
+        data = np.loadtxt(filename)
+        X = data[:, :-1]
+        z = data[:, -1]
+    else:
+        print(f"Nie znaleziono pliku '{filename}'. Generuję nowe dane treningowe...")
+        # Używamy N+M jako ziarna losowości, aby dane były powtarzalne
+        np.random.seed(N + M)
 
-    print(f"Wygenerowano zbiór treningowy o wymiarach X: {X.shape}, d: {d.shape}\n")
+        X = np.random.rand(M, N) * 2 - 1
+        prawdziwe_wagi = np.random.randn(N)
+        z = X @ prawdziwe_wagi + np.random.randn(M) * 0.1
 
-    final_weights = []
+        data_to_save = np.hstack((X, z.reshape(-1, 1)))
+        np.savetxt(filename, data_to_save, fmt="%.8f")
+        print(f"Dane zostały zapisane w pliku '{filename}'.")
 
-    # 2. Wykonanie algorytmu kilkukrotnie (num_runs)
+    print(f"\n--- START EKSPERYMENTU: N = {N}, M = {M} ---")
+    print(f"Zbiór treningowy: X ma wymiar {X.shape}, z ma wymiar {z.shape}\n")
+
+    final_weights_list = []
+
     for run in range(num_runs):
-        print(f"-> Uruchomienie {run + 1}/{num_runs}")
-        # Losowe, RÓŻNIĄCE SIĘ w każdym wykonaniu, wartości wag początkowych
-        w = np.random.randn(N)
-        print(f"   Wagi początkowe: {np.round(w, 4)}")
+        print(f"-> PRZEBIEG {run + 1}/{num_runs}")
 
-        # Pętla treningowa
-        for epoch in range(epochs):
-            # Prezentacja każdego wzorca w epoce (uczenie online)
-            for i in range(M):
-                x_i = X[i]
-                d_i = d[i]
+        w = np.random.uniform(low=-0.5, high=0.5, size=N)
+        print(f"   Wagi początkowe (w): {np.round(w, 4)}")
 
-                # Obliczenie odpowiedzi neuronu
-                y_i = np.dot(w, x_i)
-
-                # Obliczenie błędu
-                error = d_i - y_i
-
-                # Aktualizacja wag
-                delta_w = learning_rate * error * x_i
+        # Pętla epok
+        for k in range(epochs):
+            # Pętla po wzorcach
+            for mi in range(M):
+                x_mi = X[mi]
+                z_mi = z[mi]
+                y = np.dot(w, x_mi)
+                error = z_mi - y
+                delta_w = eta * error * x_mi
                 w = w + delta_w
 
-        final_weights.append(w)
-        print(f"   Wagi końcowe:    {np.round(w, 4)}")
+        final_weights_list.append(w)
+        print(f"   Wagi końcowe (w):    {np.round(w, 4)}")
 
-        # Sprawdzenie błędu końcowego (Mean Squared Error)
-        y_pred = X @ w
-        mse = np.mean((d - y_pred) ** 2)
-        print(f"   Końcowy błąd średniokwadratowy (MSE): {mse:.6f}\n")
+        y_final = X @ w
+        mse = np.mean((z - y_final) ** 2)
+        print(f"   Końcowy błąd (MSE): {mse:.6f}\n")
 
-    # 3. Porównanie wag końcowych
-    print("-> Porównanie wag końcowych z różnych uruchomień:")
-    for i, w in enumerate(final_weights):
-        print(f"   Uruchomienie {i + 1}: {np.round(w, 4)}")
+    print("-> Porównanie i analiza wag końcowych:")
 
-    # Sprawdzenie, czy wagi są do siebie zbliżone
-    if len(final_weights) > 1:
-        # Obliczamy odchylenie standardowe dla każdej wagi w poprzek uruchomień
-        std_dev_of_weights = np.std(np.array(final_weights), axis=0)
-        print(f"\nOdchylenie standardowe wag końcowych: {np.round(std_dev_of_weights, 4)}")
-        if np.all(std_dev_of_weights < 1e-2):
-            print("WNIOSKI: Wagi końcowe są **bardzo zbliżone** lub **identyczne**.")
-        else:
-            print("WNIOSKI: Wagi końcowe są **różne** w zależności od inicjalizacji.")
+    std_dev_of_weights = np.std(np.array(final_weights_list), axis=0)
+    print(f"   Odchylenie standardowe wag: {np.round(std_dev_of_weights, 4)}")
+
+    if np.all(std_dev_of_weights < 1e-2):
+        print("   WNIOSKI: Wagi końcowe są **zbieżne** (praktycznie identyczne) w każdym przebiegu.")
+    else:
+        print("   WNIOSKI: Wagi końcowe są **różne** w zależności od losowej inicjalizacji.")
 
     print(f"--- KONIEC EKSPERYMENTU: N = {N}, M = {M} ---\n\n")
 
 
-# Przeprowadzenie 3 eksperymentów
+# Główna część programu
 if __name__ == "__main__":
-    # Przypadek 1: N < M (Układ nadokreślony)
-    train_linear_neuron(N=3, M=10)
+    # PRZYPADEK 1: N < M
+    train_and_analyze(N=3, M=10)
 
-    # Przypadek 2: N = M (Układ oznaczony)
-    train_linear_neuron(N=5, M=5)
+    # PRZYPADEK 2: N = M
+    train_and_analyze(N=5, M=5)
 
-    # Przypadek 3: N > M (Układ nieoznaczony)
-    train_linear_neuron(N=10, M=4)
+    # PRZYPADEK 3: N > M
+    train_and_analyze(N=10, M=4)
