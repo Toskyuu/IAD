@@ -5,7 +5,6 @@ import os
 def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
     filename = f"dane_N{N}_M{M}.txt"
 
-    # --- Wczytywanie lub generowanie danych ---
     if os.path.exists(filename):
         print(f"Znaleziono plik '{filename}'. Wczytuję dane treningowe...")
         data = np.loadtxt(filename)
@@ -27,15 +26,12 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
     final_weights_list = []
     mse_list = []
 
-    # --- Główna pętla treningowa ---
     for run in range(num_runs):
         print(f"-> PRZEBIEG {run + 1}/{num_runs}")
 
-        # Losowe wagi początkowe
         w = np.random.uniform(low=-0.5, high=0.5, size=N)
         print(f"   Wagi początkowe (w): {np.round(w, 4)}")
 
-        # Pętla epok
         for k in range(epochs):
             for mi in range(M):
                 x_mi = X[mi]
@@ -53,7 +49,6 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
         print(f"   Wagi końcowe (w):    {np.round(w, 4)}")
         print(f"   Końcowy błąd (MSE): {mse:.6f}\n")
 
-    # --- Analiza wyników ---
     print("-> Porównanie i analiza wag końcowych:")
     std_dev_of_weights = np.std(np.array(final_weights_list), axis=0)
     mean_std_dev = np.mean(std_dev_of_weights)
@@ -67,7 +62,6 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
     print(f"--- KONIEC EKSPERYMENTU: N = {N}, M = {M} ---\n\n")
 
 
-# --- Główna część programu ---
 if __name__ == "__main__":
     # PRZYPADEK 1: N < M
     train_and_analyze(N=10, M=80)
