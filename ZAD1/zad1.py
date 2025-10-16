@@ -31,6 +31,7 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
 
         w = np.random.uniform(low=-0.5, high=0.5, size=N)
         print(f"   Wagi początkowe (w): {np.round(w, 4)}")
+        Y = []
 
         for k in range(epochs):
             for mi in range(M):
@@ -45,6 +46,8 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
         y_final = X @ w
         mse = np.mean((z - y_final) ** 2)
         mse_list.append(mse)
+        print("Szukane wartości: ", z)
+        print("Znalezione wartości: ", y_final)
 
         print(f"   Wagi końcowe (w):    {np.round(w, 4)}")
         print(f"   Końcowy błąd (MSE): {mse:.6f}\n")
@@ -64,10 +67,10 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
 
 if __name__ == "__main__":
     # PRZYPADEK 1: N < M
-    train_and_analyze(N=10, M=80)
+    train_and_analyze(N=3, M=5)
 
-    # PRZYPADEK 2: N = M
-    train_and_analyze(N=10, M=10)
-
-    # PRZYPADEK 3: N > M
-    train_and_analyze(N=80, M=10)
+    # # PRZYPADEK 2: N = M
+    # train_and_analyze(N=3, M=10)
+    #
+    # # PRZYPADEK 3: N > M
+    # train_and_analyze(N=80, M=10)
