@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 
-def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
+def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.7):
     filename = f"dane_N{N}_M{M}.txt"
 
     if os.path.exists(filename):
@@ -46,11 +46,12 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
         y_final = X @ w
         mse = np.mean((z - y_final) ** 2)
         mse_list.append(mse)
-        print("Szukane wartości: ", z)
-        print("Znalezione wartości: ", y_final)
+
 
         print(f"   Wagi końcowe (w):    {np.round(w, 4)}")
         print(f"   Końcowy błąd (MSE): {mse:.6f}\n")
+        print("   Szukane wartości: ", z)
+        print("   Znalezione wartości: ", y_final)
 
     print("-> Porównanie i analiza wag końcowych:")
     std_dev_of_weights = np.std(np.array(final_weights_list), axis=0)
@@ -67,10 +68,10 @@ def train_and_analyze(N, M, num_runs=3, epochs=100, eta=0.05):
 
 if __name__ == "__main__":
     # PRZYPADEK 1: N < M
-    train_and_analyze(N=3, M=5)
+    # train_and_analyze(N=3, M=5)
 
     # # PRZYPADEK 2: N = M
-    # train_and_analyze(N=3, M=10)
+     train_and_analyze(N=3, M=3)
     #
-    # # PRZYPADEK 3: N > M
-    # train_and_analyze(N=80, M=10)
+    # # # PRZYPADEK 3: N > M
+    # train_and_analyze(N=5, M=3)
