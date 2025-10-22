@@ -25,8 +25,7 @@ def generate_font_image(width, height, x, y, font_file, letter, noise_level, out
     draw.text((x, y), letter, font=font, fill=0)
 
     image_np = np.array(image_pil)
-    image_binary = image_np
-
+    _, image_binary = cv2.threshold(image_np, 254, 255, cv2.THRESH_BINARY)
     if noise_level > 0:
         probability = noise_level / 100.0
         for i in range(height):

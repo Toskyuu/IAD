@@ -1,4 +1,0 @@
-x.png:letter x, noise level 15%
-x.png:letter x, noise level 0%
-z.png:letter z, noise level 55%
-z.png:letter z, noise level 55%
