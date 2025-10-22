@@ -32,11 +32,9 @@ def load_data_from_directory(directory_path):
 
                 image_vector = image.flatten()
 
+                binary_vector = (image_vector < 128).astype(np.float32)
 
-                bipolar_vector = np.float64(image_vector)
-                bipolar_vector = (bipolar_vector / -127.5) + 1.0
-
-                patterns.append({'label': label, 'vector': bipolar_vector})
+                patterns.append({'label': label, 'vector': binary_vector})
 
             except ValueError:
                 print(f"OSTRZEŻENIE: Pomijam niepoprawną linię w description.txt: {line}")
